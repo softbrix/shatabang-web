@@ -1,22 +1,33 @@
----
 language: node_js
 node_js:
-  - "6"
-
+- node
 sudo: false
 dist: trusty
-
 addons:
   chrome: stable
 
-cache:
-  directories:
-    - $HOME/.npm
+cache: npm
 
 env:
   global:
-    # See https://git.io/vdao3 for details.
-    - JOBS=1
+  - JOBS=1
 
 before_install:
-  - npm config set spin false
+- npm config set spin false
+
+script:
+- ember build --environment='production'
+
+after_script:
+- tar -zcf ${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz
+  dist/
+
+deploy:
+  provider: releases
+  api_key:
+    secure: ThJ51o+HLRDjnlhbpzJB6vMJMmvrdGy5ziFtqn+yr2qSU8OCFRkEKI9/pe1gZvJPkvBTGGk3cEjGp+FWaBSTGsD7VCoL//n72bhyxl4Hp7GLZ9xYMNa7Y2qHrrUor3sbY4gc9YejUuOgfqQMQpCPNbTzawUgCC6ZyYi0HZ3CU/1Sykb81HiCFnN1n4UrkZydrehpbKxeyQZRppePyRfTBapq9gXltayMUEK3BEh0oZFGxWLg7w1urmhKxfFB9J0U97T8iyfjl3li+y4t44ORH1aqyKLZkmTq6NtcufoqeCGT6ELzIGFCgu5nUWrh1Rj7sClcHhY1ggd7T6q7ibWwd2o77c4humbAE3cA7koq9hAm1FaDSW7Tyeoi0qUugKMxZrmIn0x4vkHnaXo4c0UhkyvXWpCix5ouaEDTQb6ybxs8ZwwFLuTGf0KOW9RAtkoYEB2e9ODJGh98VL06RNQ99WXRLyQKu98E6l1/4KmkqxxwNd3JNK8ubM0CwGiwrxafA2gfs19Y2O3DvuzTXwePWyepguPGAlBAED6hUJaylpT4uYduqS+Jh9FUy+6YW28KnSOZZeK6bFrgyW/uA1vNC2tpkVdv33yuYBgP8S3MaTwoZ774NE1rxDCnEmmNze4dXV3gkDUhuSO8gcSPFIudD8pTsAOidddTp8TJ/cd3m7Y=
+  file: "${TRAVIS_BUILD_DIR}${REPO}-${BUILD_ENV}-${TRAVIS_TAG}-${TRAVIS_BUILD_NUMBER}.tar.gz"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: softbrix/shatabang-web
