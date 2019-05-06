@@ -11,6 +11,7 @@ cache: npm
 env:
   global:
   - JOBS=1
+  - BUILD_BASE_URL=/replacemeurl/
 
 before_install:
 - npm config set spin false
