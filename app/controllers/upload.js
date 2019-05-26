@@ -37,6 +37,12 @@ export default Controller.extend({
       // Will send the filesize along with the file as POST data.
       formData.append("filesize", file.size);
       window.addEventListener('beforeunload', preventNavigation, false);
+
+      //Execute on case of timeout only
+      xhr.ontimeout = function(e) {
+          //Output timeout error message here
+          alert('Server Timeout', e);
+      };
     };
   }),
   queuecompleteEvent: computed(function() {
