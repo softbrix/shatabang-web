@@ -1,14 +1,14 @@
-import $ from 'jquery';
+import fetch from 'fetch';
 import Service from '@ember/service';
 
 export default Service.extend({
   deleteMedia(realtivePath) {
-    return $.ajax({
-      url: './api/images/delete',
-      type: "POST",
-      contentType:"application/json; charset=utf-8",
-      dataType: "text",
-      data: JSON.stringify([realtivePath])
+    return fetch( './api/images/delete', {
+      method: 'post',
+      headers: {
+        'Content-Type': "application/json; charset=utf-8"
+      },
+      body: JSON.stringify([realtivePath])
     });
   }
 });

@@ -1,18 +1,15 @@
-import $ from 'jquery';
 import Service from '@ember/service';
-import Ember from 'ember';
-
-const Logger = Ember.Logger;
+import { debug } from '@ember/debug';
 
 export default Service.extend({
 
   initialize: function() {
     setInterval(function() {
-      $.get('./api/upload/imported')
+      fetch('./api/upload/imported')
         .then(function (response) {
-          var images = response.data;
+          var images = response.text();
           if(images !== undefined && images.length > 0) {
-            Logger.debug('imported', images);
+            debug('imported: '+  JSON.stringify(images));
             /*importImages(images);
             imageList = undefined;
             clearImageList();

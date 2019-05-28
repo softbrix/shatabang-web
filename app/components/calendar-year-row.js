@@ -1,8 +1,8 @@
+import { htmlSafe } from '@ember/template';
 import Component from '@ember/component';
 import EmberObject from '@ember/object';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import Ember from 'ember';
 
 const BLOCK_WIDTH = 180;
 const MAX_DAYS = 366;
@@ -40,16 +40,16 @@ let scrollListener = function(ctx, callback) {
 
 export default Component.extend({
   mediaLoader: service('media-list-loader'),
-  mediaList: [],
+  mediaList: undefined,
   id: computed('year', function() {
-    return "row_"  + this.get('year');
+    return "row_"  + this.year;
   }),
 
   init() {
     this._super(...arguments);
     this.set('mediaList', []);
     this.unregisterScrollListener = scrollListener(this, this.actions.updateMediaContent);
-    this.get('mediaLoader').fullyLoadedPromise().then(() => {
+    this.mediaLoader.fullyLoadedPromise().then(() => {
       this.actions.updateMediaContent.bind(this)(window.scrollX);
     });
   },
@@ -58,7 +58,7 @@ export default Component.extend({
     this._super(...arguments);
   },
   getDateFromDay(day) {
-    let d = new Date(this.get('year'), 0, 1);
+    let d = new Date(this.year, 0, 1);
     d.setDate(d.getDate() + day);
     return d;
   },
@@ -82,7 +82,7 @@ export default Component.extend({
       var now = new Date();
       var tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2).getTime();
 
-      this.get('mediaList').clear();
+      this.mediaList.clear();
       for(var d = from; d < to; ++d) {
         var date = this.getDateFromDay(d);
         it.gotoPath([date.getFullYear(), date.getMonth() + 1, date.getDate()]);
@@ -102,9 +102,9 @@ export default Component.extend({
         }
 
         if(obj.leftCss === undefined) {
-          obj['leftCss'] = Ember.String.htmlSafe('left:' + x + 'px');
+          obj['leftCss'] = htmlSafe('left:' + x + 'px');
         }
-        this.get('mediaList').pushObject(obj);
+        this.mediaList.pushObject(obj);
       }
     }
   },

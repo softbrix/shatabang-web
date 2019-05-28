@@ -1,9 +1,7 @@
 import Route from '@ember/routing/route';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import Ember from 'ember';
+import { debug } from '@ember/debug';
 import RSVP from 'rsvp';
-
-const Logger = Ember.Logger;
 
 // TODO: Remove code dupplication
 // This could be handled on the server
@@ -33,11 +31,12 @@ function expandFaceInfo(info) {
 export default Route.extend(AuthenticatedRouteMixin).extend({
   model() {
     return RSVP.hash({
-      faces: Ember.$.getJSON('./api/faces/list')
+      faces: fetch('./api/faces/list/unknown')
+        .then(resp => resp.json())
         .then(list =>  {
           list.forEach((a) => {
             if(a.s * 1 !== a.s) {
-              Logger.log('No stat', a.k);
+              debug('No stat', a.k);
               a.s = 0;
             }
           });
@@ -47,7 +46,7 @@ export default Route.extend(AuthenticatedRouteMixin).extend({
         .then(list => list.map(itm => { itm.a = itm.h * itm.w; return itm; }))
         .then(list => list.sort((a,b) => b.a - a.a))  // Sort desc based on focus
         .then(l => l.slice(0, 1024)),
-      people: this.get('store').findAll('person')
+      people: this.store.findAll('person')
     });
   }
 });

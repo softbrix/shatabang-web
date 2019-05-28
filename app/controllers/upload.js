@@ -52,23 +52,23 @@ export default Controller.extend({
       that.set('_speedTimer', 0);
     };
   }),
-  progress: function() {
-    var total = this.get('totalFileSize');
+  progress: computed('totalFileSize', 'sentFileSize', function() {
+    var total = this.totalFileSize;
     if(total === 0) {
       return 0;
     }
-    return (this.get('sentFileSize') / total) * 100;
-  }.property('totalFileSize', 'sentFileSize'),
-  speed: function() {
-    var total = this.get('sentFileSize'),
-        timer = this.get('_speedTimer');
+    return (this.sentFileSize / total) * 100;
+  }),
+  speed: computed('_speedTimer', 'sentFileSize', function() {
+    var total = this.sentFileSize,
+        timer = this._speedTimer;
     if(total === 0 || timer === 0) {
       return 0;
     }
     var elapsedMillis = Math.floor(Date.now() - timer);
     // Result in kbs
     return Math.round(total / elapsedMillis);
-  }.property('_speedTimer', 'sentFileSize'),
+  }),
   currentlySending: 0,
   totalFileSize: 0,
   sentFileSize: 0,

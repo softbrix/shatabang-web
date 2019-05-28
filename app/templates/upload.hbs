@@ -1,9 +1,9 @@
 
-{{#link-to 'index' class="back_to_index_btn btn btn-primary btn-sm float_right"}}X{{/link-to}}
+{{#link-to "index" class="back_to_index_btn btn btn-primary btn-sm float_right"}}X{{/link-to}}
 
 <h1>Import new images</h1>
 {{#drop-zone
-  url='./api/upload/single'
+  url="./api/upload/single"
   clickable=true
   addRemoveLinks=false
   maxFilesize=5000
@@ -20,6 +20,6 @@
 }}{{/drop-zone}}
 
 {{#if totalFileSize}}
-  Progress: {{progress}}%<br/>
+  Progress: {{progress}}% <br>
   Speed: {{speed}}kbs
 {{/if}}

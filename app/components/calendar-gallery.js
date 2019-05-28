@@ -1,7 +1,7 @@
+import { later, cancel } from '@ember/runloop';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import Ember from 'ember';
 
 const MAX_DAYS = 366; // Including leap day
 const BLOCK_WIDTH = 180;
@@ -32,9 +32,10 @@ function dateToDay(date) {
   return day;
 }
 
-function pixelToDay(pxl) {
+/* function pixelToDay(pxl) {
   return Math.floor(pxl / BLOCK_WIDTH) + 1;
-}
+}*/
+
 function dayToPixel(day) {
   return day * BLOCK_WIDTH;
 }
@@ -64,7 +65,7 @@ export default Component.extend({
       this.set('today', currentDayNumber);
 
       // Run once every minute
-      var t = Ember.run.later(updateTime.bind(this), 60 * 1000);
+      var t = later(updateTime.bind(this), 60 * 1000);
       this.set('_updateTimer', t);
     };
     updateTime.bind(this)();
@@ -76,7 +77,7 @@ export default Component.extend({
   },
   willDestroyElement() {
     this._super(...arguments);
-    Ember.run.cancel(this._updateTimer);
+    cancel(this._updateTimer);
   },
 
   actions: {

@@ -3,9 +3,9 @@
 {{fullsize-media activeMedia=activeMedia reverseMove=true}}
 
 <div id="calendar-gallery">
-  <button {{action 'scrollToStart'}} style="position: fixed; left: 5px; top: 32px" class=" btn btn-primary">&larr;</button>
-  <button {{action 'scrollToToday'}} style="position: fixed; left: 60px; top: 32px" class=" btn btn-primary">Today</button>
-  <button {{action 'scrollToEnd'}} style="position: fixed; right: 5px; top: 32px" class=" btn btn-primary">&rarr;</button>
+  <button {{action "scrollToStart"}} style="position: fixed; left: 5px; top: 32px" class=" btn btn-primary">&larr;</button>
+  <button {{action "scrollToToday"}} style="position: fixed; left: 60px; top: 32px" class=" btn btn-primary">Today</button>
+  <button {{action "scrollToEnd"}} style="position: fixed; right: 5px; top: 32px" class=" btn btn-primary">&rarr;</button>
 
   {{calendar-date-axis todayX=nowX days=days}}
 

@@ -2,20 +2,18 @@
 
 <div id="selectedHeader" class="header subHeader">
 
-  <a onclick={{action 'zoomIn'}} class="zoomBtn">
+  <a onclick={{action "zoomIn"}} class="zoomBtn">
     <span class=" btn btn-primary btn-sm notMobile"> + </span>
     <i class="fa fa-plus-square onlyMobile" aria-hidden="true"></i>
   </a>
-  <a onclick={{action 'zoomOut'}} class="zoomBtn">
+  <a onclick={{action "zoomOut"}} class="zoomBtn">
     <span class=" btn btn-primary btn-sm notMobile"> - </span>
     <i class="fa fa-minus-square onlyMobile" aria-hidden="true"></i>
   </a>
 
   <div style="float: right">
     <label class="notMobile">Date</label>
-    <!--<input type="date" value="{{fromDate}}" id="fromDateIpt" class="datePicker" onchange={{action 'fromDateChanged'}} /> -->
-    <!-- - -->
-    <input type="date" value="{{toDate}}" id="toDateIpt" class="datePicker" onchange={{action 'toDateChanged'}} />
+    <input type="date" value="{{toDate}}" id="toDateIpt" class="datePicker" onchange={{action "toDateChanged"}} />
     <div  style="display: none">
       |
       <label class="notMobile">Rating:</label>
@@ -40,7 +38,6 @@
   <div class="calendar-bootstrap"></div>
 </div>
 
-<!-- Main -->
 <div id="gallery">
   {{simple-gallery fromDate=toDate}}
 </div>

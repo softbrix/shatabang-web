@@ -1,10 +1,6 @@
-/* global window */
-
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import Ember from 'ember';
-
-const Logger = Ember.Logger;
+import { debug } from '@ember/debug';
 
 export default Component.extend({
   classNames: ['gallery'],
@@ -15,18 +11,19 @@ export default Component.extend({
   mediaCount: 64,
   activeMedia: undefined,
   mediaIterator: undefined,
-  mediaList: [],
+  mediaList: undefined,
   fromDate: undefined,
 
   init() {
     this._super(...arguments);
-    this.get('imageWidthService').reset();
+    this.set('mediaList', []);
+    this.imageWidthService.reset();
   },
   didInsertElement() {
     this._super(...arguments);
 
     var that = this;
-    this.get('mediaLoader').loadedPromise().then(function(tree) {
+    this.mediaLoader.loadedPromise().then(function(tree) {
       that.set('mediaIterator', tree.leafIteratorReverse());
       // Initial load
       that._loadMedia();
@@ -56,28 +53,28 @@ export default Component.extend({
   didUpdateAttrs() {
     this._super(...arguments);
 
-    var d = new Date(this.get('fromDate'));
-    this.get('mediaIterator').gotoPath([d.getFullYear(), d.getMonth() + 1, d.getDate()], true);
-    this.get('mediaList').clear();
+    var d = new Date(this.fromDate);
+    this.mediaIterator.gotoPath([d.getFullYear(), d.getMonth() + 1, d.getDate()], true);
+    this.mediaList.clear();
     this._loadMedia();
   },
   willDestroyElement() {
     this._super(...arguments);
-    Logger.debug('deactivate index');
-    var cleanup = this.get('windowscrollCleanup');
+    debug('deactivate index');
+    var cleanup = this.windowscrollCleanup;
     if(cleanup !== undefined) {
       cleanup();
     }
   },
   _loadMedia() {
-    const it = this.get('mediaIterator');
+    const it = this.mediaIterator;
     // TODO: This should probably be a computation like:
     // images per row  * rows per screen height   ...
-    const count = this.get('mediaCount');
+    const count = this.mediaCount;
     for(var i = 0; i < count && it.hasPrev(); ++i) {
       var obj = it.prev();
       obj.path = it.getPath();
-      this.get('mediaList').pushObject(obj);
+      this.mediaList.pushObject(obj);
     }
 
     return i === count;
