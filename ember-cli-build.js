@@ -54,8 +54,6 @@ module.exports = function(defaults) {
   'client/assets/dropzone/dropzone.min.js'
   */
 
-  app.import('node_modules/bootstrap/dist/js/bootstrap.js');
-
   ['woff', 'woff2', 'ttf', 'svg'].forEach((suffix) => {
     app.import('node_modules/font-awesome/fonts/fontawesome-webfont.' + suffix, {
       destDir: 'fonts'

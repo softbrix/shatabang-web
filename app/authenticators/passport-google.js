@@ -1,4 +1,5 @@
 "use strict";
+import { debug } from '@ember/debug';
 import fetch from 'fetch';
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base';
 
@@ -12,13 +13,15 @@ export default BaseAuthenticator.extend({
   */
   restore() {
     return fetch( './api/users/me')
-      .then((resp) => {
-        return resp.text()
-      }, function(resp) {
+      .then(resp => {
+        if (resp.ok) {
+          return resp.text()
+        }
+        debug(resp);
         if(resp.status === 401) {
-          Promise.reject('Unknown username and/or password');
+          return Promise.reject('Unknown username and/or password');
         } else {
-          Promise.reject('Unknown authorization error');
+          return Promise.reject('Unknown authorization error');
         }
       });
   },

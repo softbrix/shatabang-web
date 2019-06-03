@@ -45,7 +45,7 @@ export default Route.extend(AuthenticatedRouteMixin).extend({
         .then(list => list.map(itm => { var o = expandFaceInfo(itm.i); o.s = itm.s; o.k = itm.k; o.b = itm.b; return o}))
         .then(list => list.map(itm => { itm.a = itm.h * itm.w; return itm; }))
         .then(list => list.sort((a,b) => b.a - a.a))  // Sort desc based on focus
-        .then(l => l.slice(0, 1024)),
+        .then(l => l.slice(0, 512)),
       people: this.store.findAll('person')
     });
   }

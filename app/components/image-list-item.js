@@ -3,6 +3,7 @@ import { computed } from '@ember/object';
 
 export default Component.extend({
   tagName: 'img',
+  classNameBindings:['item.removed:hidden'],
   attributeBindings: ['imgSrc:src', 'imgAlt:alt', 'imgAlt:title'],
   didInsertElement() {
     this._super(...arguments);
@@ -12,5 +13,8 @@ export default Component.extend({
   }),
   imgAlt: computed('item', function() {
     return this.get('item.selected') + this.get('item.b') + ' - ' + this.get('item.s') + ' - ' + this.get('item.a');
+  }),
+  imgClass: computed('item', function() {
+    return this.get('item.removed') ? "hidden" : "";
   })
 });

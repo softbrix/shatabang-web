@@ -15,13 +15,17 @@ export default BaseAuthenticator.extend({
   restore(data) {
     debug('restore user: ' + JSON.stringify(data));
     return fetch( './api/users/me')
-      .then(resp => resp.text(), function(resp) {
-        if(resp.status === 401) {
-          Promise.reject('Unknown username and/or password');
-        } else {
-          Promise.reject('Unknown authorization error');
-        }
-      });
+      .then(resp => {
+          if (resp.ok) {
+            return resp.text()
+          }
+          debug(resp);
+          if(resp.status === 401) {
+            return Promise.reject('Unknown username and/or password');
+          } else {
+            return Promise.reject('Unknown authorization error');
+          }
+        });
   },
 
   /*

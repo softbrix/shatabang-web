@@ -13,7 +13,9 @@ export default Service.extend({
       this.set('user', user);
     };
     if (this.get('session.isAuthenticated')) {
-      return this.store.findRecord('user', 'me').then(setUser);
+      return this.store
+        .findRecord('user', 'me')
+        .then(setUser);
     } else {
       return this.session
         .authenticate('authenticator:passport_google')

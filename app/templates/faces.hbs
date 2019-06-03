@@ -38,6 +38,13 @@
 <h3> Unknown faces </h3>
 <ul class="face_list">
   {{#each model.faces as |face|}}
-    {{image-list-item item=face click=(action "imageClicked" face)}}
+    <li class={{if face.removed 'hidden'}}>
+      {{image-list-item item=face click=(action "imageClicked" face)}}
+      <a onclick={{action "confirmDelete" face}} disabled={{face.deleting}}>
+        <span class=" btn btn-danger btn-xs">
+          <i class="fa fa-trash" aria-hidden="true"></i>
+        </span>
+      </a>
+    </li>
   {{/each}}
 </ul>

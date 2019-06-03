@@ -1,3 +1,4 @@
+import fetch from 'fetch';
 import Controller from '@ember/controller';
 import { debug } from '@ember/debug';
 
@@ -5,6 +6,7 @@ export default Controller.extend({
   addingPerson: false,
   selectedElement: undefined,
   selectedFace: undefined,
+  selectedFaceIndex: undefined,
   actions: {
     addPerson() {
       var isAddingPerson = this.addingPerson;
@@ -18,7 +20,7 @@ export default Controller.extend({
           thumbnail: this.get('selectedFace.b')
         });
         return person.save().then(() => {
-          this.resetSelectedFace();
+          this.removeSelectedFace();
           this.set('addingPerson', false);
           this.set('newPersonName', '');
         }, (error) => {
@@ -26,6 +28,23 @@ export default Controller.extend({
         });
       }
       this.set('addingPerson', !isAddingPerson);
+    },
+    confirmDelete: function(face, event) {
+      if(event) {
+        event.preventDefault();
+      }
+      this.set('selectedFace', face);
+      this.set('selectedFace.deleting', true);
+      console.log(face);
+      let confirmed = window.confirm('Do you really want to delete this media file?');
+      if(confirmed) {
+        fetch('./api/faces/'+face.b, {
+          method: 'delete',
+          credentials: 'include'
+        }).then(() => {
+          this.removeSelectedFace();
+        });
+      }
     },
     cancelAddPerson() {
       this.resetSelectedFace();
@@ -45,6 +64,10 @@ export default Controller.extend({
     personClicked(person) {
       debug(person);
     }
+  },
+  removeSelectedFace() {
+    this.set('selectedFace.removed', true);
+    this.resetSelectedFace();
   },
   resetSelectedFace() {
     this.set('highlightSelectFace', false);
