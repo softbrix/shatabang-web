@@ -29,14 +29,16 @@ export default Component.extend({
   classNames: ['galleryImage', 'fullsizeMedia'],
   classNameBindings: ['isWider:fullWidth:fullHeight'],
 
-  imgSize: {w: 1, h: 1},
-  screenSize: {w: 1, h: 1},
+  imgSize: undefined,
+  screenSize: undefined,
 
   init: function() {
     this._super(...arguments);
     this._imgResize();
     this._screenResize();
     this._resizeEventMthd = this._screenResize.bind(this);
+    this.imgSize = {w: 1, h: 1};
+    this.screenSize = {w: 1, h: 1};
     window.addEventListener("resize", this._resizeEventMthd);
   },
   willDestroyElement() {
@@ -49,7 +51,7 @@ export default Component.extend({
     this.set('screenSize', {w: size.width, h: size.height});
   },
   _imgResize: function() {
-    getImgSize(this.get('imgSrc'), function(size) {
+    getImgSize(this.imgSrc, function(size) {
       this.set('imgSize', {w: size.width, h: size.height});
     }.bind(this));
   },
@@ -60,12 +62,13 @@ export default Component.extend({
     return this.get('media.date') + ' - '+ this.get('media.img');
   }),
   isWider: computed('imgSize', 'screenSize', function() {
-    var iSize = this.get('imgSize'),
-        sSize = this.get('screenSize');
+    var iSize = this.imgSize,
+        sSize = this.screenSize;
 
     var ratio = ((iSize.w / sSize.w) / (iSize.h / sSize.h));
     return ratio > 1;
   }),
+  // eslint-disable-next-line ember/no-observers
   mediaChanged: observer('media', function() {
     // Executes whenever the "media" property changes
     this._imgResize();

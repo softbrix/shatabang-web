@@ -1,8 +1,6 @@
-@import "bootstrap";
-@import "theme";
 @import "font-awesome";
 
-/* @import "ember-bootstrap/bootstrap"; */
+@import "ember-bootstrap/bootstrap";
 
 html, body, .fullSize, .wrapper {
   height: 100%;
@@ -72,8 +70,21 @@ body > .ember-view {
 
 /** Face page **/
 
-.face_list img {
-    width: 100px;
+.face_list {
+	img {
+		width: 100px;
+	}
+	li {
+		float: left;
+		position: relative;
+		margin: 0 15px 5px 0;
+
+		a {
+			position: absolute;
+			top: 2px;
+			right: 2px;
+		}
+	}
 }
 
 .person_list {
@@ -90,7 +101,19 @@ body > .ember-view {
   height: 650px;
 }
 
+.debug-media-info {
+	position: fixed;
+  bottom: 0;
+  color: white;
+	right: 0;
+	border: 3px solid #73AD21
+}
 
+.media-item-icon {
+	position: absolute; 
+	z-index: 5; 
+	margin: 0 3px
+}
 
 .float_right {
   float: right;

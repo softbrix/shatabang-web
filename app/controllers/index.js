@@ -18,7 +18,7 @@ export default Controller.extend({
       this.set('toDate', now.toLocaleDateString());
       this.set('fromDate', now.toLocaleDateString());
 
-      this.get('mediaLoader').fullyLoadedPromise().then(() => {
+      this.mediaLoader.fullyLoadedPromise().then(() => {
         var tree = this.get('mediaLoader.tree');
         var it = tree.leafIterator();
         this.set('fromDate', (it.hasPrev() ? it.next().date : now).toLocaleDateString());
@@ -26,11 +26,11 @@ export default Controller.extend({
         //this.set('toDate', (itl.hasPrev() ? itl.prev().date : now).toLocaleDateString());
       });
     }
-    this.get('imageWidthService');
+    this.imageWidthService;
   },
   actions: {
-    zoomIn: function() { this.get('imageWidthService').zoomIn(); },
-    zoomOut: function() { this.get('imageWidthService').zoomOut(); },
+    zoomIn: function() { this.imageWidthService.zoomIn(); },
+    zoomOut: function() { this.imageWidthService.zoomOut(); },
     fromDateChanged: function(e) { this.set('fromDate', e.target.value); },
     toDateChanged: function(e) { this.set('toDate', e.target.value); }
   }

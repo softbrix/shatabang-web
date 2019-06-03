@@ -1,15 +1,14 @@
 import { run } from '@ember/runloop';
-import $ from 'jquery';
 import Service from '@ember/service';
 
 export default Service.extend({
   registerListener: function(callback) {
     // Creates a listener for the window scoll event
     var scrollChecker = newScrollCheck(callback);
-    $( window ).on('scroll', scrollChecker);
+    window.addEventListener('scroll', scrollChecker);
     // Return a cleanup method
     return function() {
-      $( window ).off('scroll', scrollChecker);
+      window.removeEventListener('scroll', scrollChecker);
     };
   },
 
@@ -20,9 +19,9 @@ function internalScrollCheck(lastS) {
   if(lastS === undefined) {
     lastS = 0;
   }
-  var s = $(window).scrollTop(),
-  d = $(document).height(),
-  c = $(window).height();
+  var s = scrollTop(),
+  d = Math.max(document.body.clientHeight, document.documentElement.scrollHeight),
+  c = window.innerHeight;
 
   var scrollPercent = (s / (d-c)) * 100;
   return d === c || (scrollPercent > 90 && s >= lastS);
@@ -42,6 +41,10 @@ function newScrollCheck(callback) {
       lastCallback = now;
       run(callback);
     }
-    lastS = $(window).scrollTop();
+    lastS = scrollTop();
   };
+}
+
+function scrollTop() {
+  return document.body.scrollTop || document.documentElement.scrollTop;
 }

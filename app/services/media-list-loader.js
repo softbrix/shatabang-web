@@ -1,12 +1,11 @@
 /* global Promise */
 
-import $ from 'jquery';
-import Ember from 'ember';
+import { debug } from '@ember/debug';
+import fetch from 'fetch';
 import Service from '@ember/service';
 import { Promise as EmberPromise, defer } from 'rsvp';
-import DibbaTree from 'npm:dibba_tree';
+import DibbaTree from 'dibba_tree';
 
-const Logger = Ember.Logger;
 const movieFileRegexp = /(.+)(mp4|m4v|avi|mov|mpe?g)$/gi;
 
 // "2016/03/14/222624.jpg"
@@ -17,7 +16,7 @@ function fileName2Date(fileName) {
   if(result !== undefined && result !== null) {
     date = new Date(result[1], result[2]-1, result[3], result[4], result[5], result[6]);
   } else {
-      Logger.error('Unknown date or file type' ,fileName);
+      debug('Unknown date or file type: ' + fileName);
   }
   return date;
 }
@@ -27,19 +26,22 @@ function isNumber(n) {
 }
 
 export default Service.extend({
-  tree : new DibbaTree(),
+  tree : undefined,
   loadedDeferred: defer(),
   fullyLoadedDeferred: defer(),
   isFullyLoaded: false,
-  folders: [],
+  folders: undefined,
 
   init: function() {
-    var tree = this.get('tree');
-    var loadedDeferred = this.get('loadedDeferred');
-    var fullyLoadedDeferred = this.get('fullyLoadedDeferred');
+    this._super(...arguments)
+    this.tree = new DibbaTree();
+    this.folders = [];
+    var tree = this.tree;
+    var loadedDeferred = this.loadedDeferred;
+    var fullyLoadedDeferred = this.fullyLoadedDeferred;
     var that = this;
 
-    $.get('./api/dirs/list').then(function(folders) {
+    fetch('./api/dirs/list').then(resp => resp.json()).then(function(folders) {
       if(folders.length === 0) {
         return;
       }
@@ -86,11 +88,12 @@ export default Service.extend({
 
       var loadImageList = function(folder) {
         that.get('folders').pushObject(folder);
-        return $.get('./images/info/'+folder+'/media.lst')
+        return fetch('./images/info/'+folder+'/media.lst')
+          .then(resp => resp.text())
           .then(function (response) {
             var images = response.split(',');
 
-            Logger.info(images);
+            debug(JSON.stringify(images));
 
             if(folder !== 'import') {
               importImages(images);
@@ -102,12 +105,13 @@ export default Service.extend({
       // This loads the first years image list
       loadImageList(folders[0])
         .then(function() {
-          Logger.debug('resolving');
+          debug('resolving');
           loadedDeferred.resolve(tree);
           // Load the rest of the images
           var promises = folders.slice(1).map(loadImageList);
           Promise.all(promises).then(values => {
-            Logger.info(tree.getSize(), values);
+            debug('Tree size: ' + tree.getSize());
+            debug(JSON.stringify(values));
             that.set('isFullyLoaded', true);
             fullyLoadedDeferred.resolve(values);
           }).catch(fullyLoadedDeferred.reject);
@@ -118,13 +122,13 @@ export default Service.extend({
     });
   },
   loadedPromise: function() {
-    if(this.get('isFullyLoaded')) {
-      return EmberPromise.resolve(this.get('tree'));
+    if(this.isFullyLoaded) {
+      return EmberPromise.resolve(this.tree);
     } else {
-      return this.get('loadedDeferred').promise;
+      return this.loadedDeferred.promise;
     }
   },
   fullyLoadedPromise: function() {
-      return this.get('fullyLoadedDeferred').promise;
+      return this.fullyLoadedDeferred.promise;
   }
 });

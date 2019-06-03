@@ -2,23 +2,23 @@ import Service from '@ember/service';
 
 export default Service.extend({
   toggleFullscreen: function() {
-    if(this.get('isFullscreen')) {
+    if(this.isFullscreen) {
       return this.closeFullscreen();
     } else {
       return this.openFullscreen();
     }
   },
   closeFullscreen: function() {
-    if(this.get('isFullscreen') && cancelFullScreen()) {
+    if(this.isFullscreen && cancelFullScreen()) {
       this.set('isFullscreen', false);
     }
-    return this.get('isFullscreen') == false;
+    return this.isFullscreen == false;
   },
   openFullscreen: function() {
-    if(this.get('isFullscreen') == false && requestFullscreen()) {
+    if(this.isFullscreen == false && requestFullscreen()) {
       this.set('isFullscreen', true);
     }
-    return this.get('isFullscreen') == false;
+    return this.isFullscreen == false;
   },
   isFullscreen: false
 });

@@ -5,9 +5,9 @@
     {{#each mediaList as |media index|}}
       <div class="calendar-media-item" style="{{media.leftCss}}">
         {{#if media.notFound}}
-          <div class="media-not-found {{if media.isFuture 'future'}}"/>
+          <div class="media-not-found {{if media.isFuture "future"}}"/>
         {{else}}
-          {{media-gallery-item media=media click=(action 'mediaClicked' media)}}
+          {{media-gallery-item media=media click=(action "mediaClicked" media)}}
         {{/if}}
       </div>
     {{/each}}

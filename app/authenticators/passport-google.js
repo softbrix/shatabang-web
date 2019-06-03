@@ -1,8 +1,6 @@
 "use strict";
-/* global $ */
-
-import { Promise as EmberPromise } from 'rsvp';
-
+import { debug } from '@ember/debug';
+import fetch from 'fetch';
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base';
 
 export default BaseAuthenticator.extend({
@@ -14,17 +12,18 @@ export default BaseAuthenticator.extend({
     @public
   */
   restore() {
-    return new EmberPromise(function(resolve, reject){
-      $.get( './api/users/me')
-        .done(resolve)
-        .fail(function(resp) {
-          if(resp.status === 401) {
-            reject('Unknown username and/or password');
-          } else {
-            reject('Unknown authorization error');
-          }
-        });
-    });
+    return fetch( './api/users/me')
+      .then(resp => {
+        if (resp.ok) {
+          return resp.text()
+        }
+        debug(resp);
+        if(resp.status === 401) {
+          return Promise.reject('Unknown username and/or password');
+        } else {
+          return Promise.reject('Unknown authorization error');
+        }
+      });
   },
 
   /*
@@ -49,12 +48,11 @@ export default BaseAuthenticator.extend({
     @public
   */
   invalidate() {
-    return new EmberPromise(function(resolve, reject){
-      $.post( './api/users/invalidate')
-        .done(resolve)
-        .fail(function() {
-          reject('Unknown authorization error');
-        });
-    });
+    return fetch( './api/users/invalidate', {
+        method: 'post'
+      })
+      .catch(function() {
+        Promise.reject('Unknown authorization error');
+      });
   }
 });

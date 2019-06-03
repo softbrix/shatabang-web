@@ -6,7 +6,7 @@ export default Component.extend({
   fullscreenService: inject('fullscreen'),
   actions: {
     toggleFullscreen: function() {
-      this.get('fullscreenService').toggleFullscreen();
+      this.fullscreenService.toggleFullscreen();
     }
   },
   isFullscreen: computed('fullscreenService.isFullscreen', function() {

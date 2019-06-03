@@ -1,7 +1,8 @@
 import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
+import { debug } from '@ember/debug';
 
-const BLOCK_WIDTH = 200;
+// const BLOCK_WIDTH = 200;
 
 export default Controller.extend({
   session: service('session'),
@@ -11,9 +12,9 @@ export default Controller.extend({
     this._super(...arguments);
     // Only init if we are authenticated...
     if (this.get('session.isAuthenticated')) {
-      this.get('mediaLoader').fullyLoadedPromise().then(() => {
-        var tree = this.get('mediaLoader.tree');
-        console.log(this.get('mediaLoader.folders'));
+      this.mediaLoader.fullyLoadedPromise().then(() => {
+        //var tree = this.get('mediaLoader.tree');
+        debug(this.get('mediaLoader.folders'));
       });
     }
   }

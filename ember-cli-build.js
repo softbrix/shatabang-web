@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -55,15 +54,17 @@ module.exports = function(defaults) {
   'client/assets/dropzone/dropzone.min.js'
   */
 
-  app.import('node_modules/bootstrap/dist/js/bootstrap.js');
-
   ['woff', 'woff2', 'ttf', 'svg'].forEach((suffix) => {
     app.import('node_modules/font-awesome/fonts/fontawesome-webfont.' + suffix, {
       destDir: 'fonts'
     });
   });
 
-
+  app.import('node_modules/@softbrix/dibba-tree/index.js', {
+    using: [
+      { transformation: 'cjs', as: 'dibba_tree' }
+    ]
+  });
 
   return app.toTree();
 };

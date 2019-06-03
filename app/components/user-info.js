@@ -1,14 +1,12 @@
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import Ember from 'ember';
-
-const Logger = Ember.Logger;
+import { debug } from '@ember/debug';
 
 export default Component.extend({
   session: service('session'),
   currentUser: service('current-user'),
   init: function() {
-    Logger.debug('init user info');
+    debug('init user info');
     this._super(...arguments);
     let that = this;
     this._loadCurrentUser().then(function() {
@@ -20,16 +18,16 @@ export default Component.extend({
   },
   actions: {
     toggleShowUserInfo: function() {
-      this.set('showUserInfo', !this.get('showUserInfo'));
+      this.set('showUserInfo', !this.showUserInfo);
     },
     invalidateSession() {
-      Logger.info('invalidate session action');
-      this.get('session').invalidate();
+      debug('invalidate session action');
+      this.session.invalidate();
     }
   },
 
   _loadCurrentUser() {
-    return this.get('currentUser').load().catch((err) => { Logger.error(err); this.get('session').invalidate()});
+    return this.currentUser.load().catch((err) => { debug(JSON.stringify(err)); this.session.invalidate()});
 
   },
   userName : '',

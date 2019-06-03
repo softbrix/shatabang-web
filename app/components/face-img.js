@@ -8,9 +8,9 @@ export default Component.extend({
     this._super(...arguments);
   },
   imgSrc: computed('faceId', function() {
-    return './api/faces/face/' + this.get('faceId');
+    return './api/faces/face/' + this.faceId;
   }),
   imgAlt: computed('faceId', function() {
-    return this.get('faceId');
+    return this.faceId;
   })
 });

@@ -1,14 +1,11 @@
-import $ from 'jquery';
-
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import Ember from 'ember';
-
-const Logger = Ember.Logger;
+import { debug } from '@ember/debug';
 
 export default Component.extend({
   activeMedia: undefined,
   reverseMove: false,
+  hideInteractiveOverlay: false,
   mediaLoader: service('media-list-loader'),
   mediaModel: service('media-model'),
   fullscreenService: service('fullscreen'),
@@ -25,9 +22,9 @@ export default Component.extend({
     this._resetPopStateEvent();
   },
   didUpdateAttrs() {
-    var a = this.get('activeMedia');
+    var a = this.activeMedia;
     if(a) {
-      if(this.get('iterator') === undefined) {
+      if(this.iterator === undefined) {
         var it = this.get('mediaLoader.tree').leafIterator();
         it.gotoPath(a.path);
         this.set('iterator', it);
@@ -52,7 +49,7 @@ export default Component.extend({
       if(event) {
         event.preventDefault();
       }
-      if(this.get('reverseMove')) {
+      if(this.reverseMove) {
         this._iterateNext()
       } else {
         this._iteratePrev();
@@ -62,7 +59,7 @@ export default Component.extend({
       if(event) {
         event.preventDefault();
       }
-      if(this.get('reverseMove')) {
+      if(this.reverseMove) {
         this._iteratePrev()
       } else {
         this._iterateNext();
@@ -70,7 +67,7 @@ export default Component.extend({
     },
     toggleInteractive: function(event) {
       if(!event.defaultPrevented) {
-        $("#interactiveOverlay").toggle();
+        this.set('hideInteractiveOverlay', !this.hideInteractiveOverlay);
       }
     },
     confirmDelete: function(event) {
@@ -80,9 +77,9 @@ export default Component.extend({
       let confirmed = window.confirm('Do you really want to delete this media file?');
       if(confirmed) {
         let moveNext = this._iteratePrev.bind(this);
-        this.get('mediaModel').deleteMedia(this.get('activeMedia.img')).then(function() {
+        this.mediaModel.deleteMedia(this.get('activeMedia.img')).then(function() {
           moveNext();
-        }, Logger.error);
+        }, debug);
       }
     }
   },
@@ -113,14 +110,14 @@ export default Component.extend({
     } else if(event.key === "Escape" || event.keyCode === 27) {
       this.actions.close.apply(this);
     } else {
-      Logger.debug('unknown key', event.key,event.keyCode);
+      debug('unknown key: ' + event.key,event.keyCode);
     }
   },
   _iterateNext() {
-    var it = this.get('iterator');
+    var it = this.iterator;
     if(it.hasNext()) {
       var next = it.next();
-      if(next === this.get('activeMedia')) {
+      if(next === this.activeMedia) {
         next = it.next();
       }
       this._preloadImages(it.getPath());
@@ -128,10 +125,10 @@ export default Component.extend({
     }
   },
   _iteratePrev() {
-    var it = this.get('iterator');
+    var it = this.iterator;
     if(it.hasPrev()) {
       var prev = it.prev();
-      if(prev === this.get('activeMedia')) {
+      if(prev === this.activeMedia) {
         prev = it.prev();
       }
       this._preloadImages(it.getPath());
@@ -144,7 +141,7 @@ export default Component.extend({
     this.set('iterator', undefined);
     this._resetHandleKeyEventMthd();
     if(this.get('fullscreenService.isFullscreen')) {
-      this.get('fullscreenService').closeFullscreen();
+      this.fullscreenService.closeFullscreen();
     }
   },
   _onpopstate() {
