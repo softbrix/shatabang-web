@@ -1,6 +1,6 @@
 
 /*jshint node:true*/
-var imageGenerator = require('sjotorp_image');
+var imageGenerator = require('sjotorp-image');
 
 module.exports = function(app) {
   var express = require('express');

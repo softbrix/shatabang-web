@@ -18,12 +18,12 @@
     "test": "ember test"
   },
   "devDependencies": {
-    "@softbrix/dibba-tree": "0.9.2",
     "body-parser": "1.19.0",
     "bootstrap": "^3.4.1",
     "broccoli": "3.0.0",
     "broccoli-asset-rev": "3.0.0",
     "broccoli-stew": "1.5.0",
+    "dibba-tree": "0.9.4",
     "ember-ajax": "5.0.0",
     "ember-bootstrap": "2.7.1",
     "ember-cli": "3.10.1",
@@ -58,7 +58,7 @@
     "loader.js": "4.7.0",
     "morgan": "1.9.1",
     "qunit-dom": "0.8.5",
-    "sjotorp_image": "1.1.0"
+    "sjotorp-image": "1.2.0"
   },
   "engines": {
     "node": ">= 10.*"

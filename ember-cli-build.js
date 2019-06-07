@@ -60,7 +60,7 @@ module.exports = function(defaults) {
     });
   });
 
-  app.import('node_modules/@softbrix/dibba-tree/index.js', {
+  app.import('node_modules/dibba-tree/index.js', {
     using: [
       { transformation: 'cjs', as: 'dibba_tree' }
     ]

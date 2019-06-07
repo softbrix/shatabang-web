@@ -1,7 +1,7 @@
 /*jshint node:true*/
 module.exports = function(app) {
   var express = require('express');
-  var imageGenerator = require('sjotorp_image');
+  var imageGenerator = require('sjotorp-image');
   var listRouter = express.Router();
 
 
