@@ -7,6 +7,8 @@ const MAX_DAYS = 366; // Including leap day
 const BLOCK_WIDTH = 180;
 const LEFT_MARGIN = 36;
 const DAY_MINUTES = 24 * 60;
+const MILLIS = 1000;
+const MINUTE_SECONDS = 60;
 
 let isLeapYear = function(date) {
   let year = date.getFullYear();
@@ -22,7 +24,7 @@ let isLeapYear = function(date) {
 function dateToDay(date) {
   var start = new Date(date.getFullYear(), 0, 0);
   var diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
-  var oneDay = 1000 * 60 * 60 * 24;
+  const oneDay = DAY_MINUTES * MINUTE_SECONDS * MILLIS;
   var day = Math.floor(diff / oneDay);
 
   if (!isLeapYear(date) && date.getMonth() > 2) {
@@ -63,7 +65,6 @@ export default Component.extend({
       var timeFraction =  ((now.getHours() * 60) + now.getMinutes()) / DAY_MINUTES;
       this.set('nowX', (currentDayNumber-1 + timeFraction) * BLOCK_WIDTH);
       this.set('today', currentDayNumber);
-
       // Run once every minute
       var t = later(updateTime.bind(this), 60 * 1000);
       this.set('_updateTimer', t);

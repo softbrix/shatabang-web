@@ -5,7 +5,8 @@ module.exports = function(app) {
 
 
   listRouter.get('/list', function(req, res) {
-    res.send(["2016","2017"]).end();
+    res.send(["2016"]).end();
+    //res.send(["2016","2017","2050"]).end();
   });
 
   app.use('/api/dirs', listRouter);

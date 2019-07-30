@@ -74,10 +74,11 @@ export default Component.extend({
       if(event) {
         event.preventDefault();
       }
-      let confirmed = window.confirm('Do you really want to delete this media file?');
+      const fileName = this.get('activeMedia.fileName');
+      let confirmed = window.confirm('Do you really want to delete this media file ' + fileName + '?');
       if(confirmed) {
         let moveNext = this._iteratePrev.bind(this);
-        this.mediaModel.deleteMedia(this.get('activeMedia.img')).then(function() {
+        this.mediaModel.deleteMedia(fileName).then(function() {
           moveNext();
         }, debug);
       }

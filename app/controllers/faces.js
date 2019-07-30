@@ -35,7 +35,6 @@ export default Controller.extend({
       }
       this.set('selectedFace', face);
       this.set('selectedFace.deleting', true);
-      console.log(face);
       let confirmed = window.confirm('Do you really want to delete this media file?');
       if(confirmed) {
         fetch('./api/faces/'+face.b, {

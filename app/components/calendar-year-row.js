@@ -38,6 +38,18 @@ let scrollListener = function(ctx, callback) {
   };
 };
 
+function pathMatch(searchPath, nodePath) {
+  if (nodePath === undefined || nodePath.length < searchPath.length) {
+    return false;
+  }
+  for (var i = 0; i < searchPath.length; ++i) {
+    if (searchPath[i] !== nodePath[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export default Component.extend({
   mediaLoader: service('media-list-loader'),
   mediaList: undefined,
@@ -85,24 +97,20 @@ export default Component.extend({
       this.mediaList.clear();
       for(var d = from; d < to; ++d) {
         var date = this.getDateFromDay(d);
-        it.gotoPath([date.getFullYear(), date.getMonth() + 1, date.getDate()]);
-        let x = dayToPixel(d);
+        const searchPath = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
+        it.gotoPath(searchPath);
 
         var obj;
-        if(it.getPath() === undefined) {
+        if(!pathMatch(searchPath, it.getPath())) {
           let isFuture = date.getTime() > tomorrow;
           obj = MediaNotFound.create({isFuture: isFuture});
         } else {
-          if(it.hasPrev()) {
-            obj = it.prev();
-          } else if (it.hasNext()){
-            obj = it.next();
-          }
+          obj = it.next();
           obj.path = it.getPath();
         }
 
         if(obj.leftCss === undefined) {
-          obj['leftCss'] = htmlSafe('left:' + x + 'px');
+          obj['leftCss'] = htmlSafe('left:' + dayToPixel(d) + 'px');
         }
         this.mediaList.pushObject(obj);
       }

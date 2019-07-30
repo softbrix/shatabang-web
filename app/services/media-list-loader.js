@@ -41,7 +41,7 @@ export default Service.extend({
     var fullyLoadedDeferred = this.fullyLoadedDeferred;
     var that = this;
 
-    fetch('./api/dirs/list').then(resp => resp.json()).then(function(folders) {
+    fetch('./api/dirs/list').then(resp => resp.json()).then(async (folders) =>{
       if(folders.length === 0) {
         return;
       }
@@ -49,30 +49,29 @@ export default Service.extend({
       // Sort folders descending, are delivered ascending DOH!...
       folders = folders.filter(isNumber).sort(function(a,b){return b-a;});
 
-      //that.set('folders', folders);
-
       var importImages = function(images) {
         images.forEach(function(fileName) {
-          var date = fileName2Date(fileName);
-
-          var isVideo, bigMediaFileName;
-          if(movieFileRegexp.test(fileName)) {
-            bigMediaFileName = "./video/" + fileName;
-            fileName = fileName.replace(movieFileRegexp, '$1jpg');
-            isVideo = true;
-          } else {
-            bigMediaFileName = './images/1920/' + fileName;
-            isVideo = false;
+          if (fileName.length <= 0) {
+            return;
           }
-
+          var date = fileName2Date(fileName);
           var newObj = {
             date: date,
-            img: fileName,
-            bigMedia: bigMediaFileName,
+            fileName: fileName,
             downloadUrl: "./media/" + fileName,
-            isVideo: isVideo,
-            isImage: !isVideo
           };
+
+          if(movieFileRegexp.test(fileName)) {
+            newObj.bigMedia = "./video/" + fileName;
+            newObj.img = fileName.replace(movieFileRegexp, '$1jpg');
+            newObj.isVideo = true;
+          } else {
+            newObj.bigMedia = './images/1920/' + fileName;
+            newObj.img = fileName;
+            newObj.isVideo = false;
+          }
+          newObj.isImage = !newObj.isVideo;
+          
 
           var y = date.getFullYear();
           var m = date.getMonth()+1; // Month is numbered from 0 - 11. Compensate with +1
@@ -102,23 +101,31 @@ export default Service.extend({
           });
       };
 
-      // This loads the first years image list
-      loadImageList(folders[0])
-        .then(function() {
-          debug('resolving');
-          loadedDeferred.resolve(tree);
-          // Load the rest of the images
-          var promises = folders.slice(1).map(loadImageList);
-          Promise.all(promises).then(values => {
-            debug('Tree size: ' + tree.getSize());
-            debug(JSON.stringify(values));
-            that.set('isFullyLoaded', true);
-            fullyLoadedDeferred.resolve(values);
-          }).catch(fullyLoadedDeferred.reject);
-        })
-        .catch(function (response) {
-          loadedDeferred.reject('Failed to resolve image tree' + response);
-        });
+      try {
+        // This loads the first years image list
+        for (var i = 0; i < folders.length; ++i) {
+          await loadImageList(folders[i])
+          if (tree.getSize() > 0) {
+            break;
+          }
+        }
+
+        debug('resolving');
+        loadedDeferred.resolve(tree);
+        // Load the rest of the images
+        var promises = folders.slice(i+1).map(loadImageList);
+        try {
+          let values = await Promise.all(promises);
+          debug('Tree size: ' + tree.getSize());
+          debug(JSON.stringify(values));
+          that.set('isFullyLoaded', true);
+          fullyLoadedDeferred.resolve(values);
+        } catch (err) {
+          fullyLoadedDeferred.reject(err);
+        }
+      } catch (response) {
+        loadedDeferred.reject('Failed to resolve image tree' + response);
+      }
     });
   },
   loadedPromise: function() {

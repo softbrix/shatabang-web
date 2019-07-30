@@ -17,7 +17,7 @@ export default Controller.extend({
         debug(resp);
         this.set('clearStatus', 'Error: ' + resp.statusText);
       }
-      fetch( './api/kue/add/clear_index/high/', {
+      fetch( './api/queue/add/clear_index/high/', {
         method: 'post',
         credentials: 'include',
         headers: {
@@ -38,7 +38,7 @@ export default Controller.extend({
         this.set('rebuildStatus', 'Error: ' + resp.statusText);
       };
       let update_year = (year) => {
-        fetch( './api/kue/addFolder/' + year +'/create_image_finger/low/', {
+        fetch( './api/queue/addFolder/' + year +'/create_image_finger/low/', {
           method: 'post',
           credentials: 'include',
           headers: {
@@ -63,7 +63,10 @@ export default Controller.extend({
             this.set('rebuildStatus', 'No folder found');
             return;
           }
-          folders.forEach(update_year);
+          folders
+            // Only sorted year folders
+            .filter(f => !isNaN(f))
+            .forEach(update_year);
       }, handleError);
     }
   }
