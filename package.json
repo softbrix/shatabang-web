@@ -22,7 +22,7 @@
     "bootstrap": "3.4.1",
     "broccoli": "3.0.0",
     "broccoli-asset-rev": "3.0.0",
-    "broccoli-stew": "1.6.0",
+    "broccoli-stew": "3.0.0",
     "dibba-tree": "0.9.5",
     "ember-ajax": "5.0.0",
     "ember-bootstrap": "2.7.1",
