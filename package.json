@@ -20,7 +20,7 @@
   "devDependencies": {
     "body-parser": "1.19.0",
     "bootstrap": "3.4.1",
-    "broccoli": "3.0.0",
+    "broccoli": "3.5.2",
     "broccoli-asset-rev": "3.0.0",
     "broccoli-stew": "1.6.0",
     "dibba-tree": "0.9.5",
